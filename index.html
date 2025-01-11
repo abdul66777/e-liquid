@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Liquid Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            text-align: center;
+            padding: 8px;
+        }
+        input {
+            width: 80%;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .note {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E-Liquid Calculator</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bahan</th>
+                    <th>ml</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total E-Liquid</td>
+                    <td><input type="number" id="totalMl" value="30" oninput="updateValues()"></td>
+                    <td><input type="number" id="totalPercent" value="100" disabled></td>
+                </tr>
+                <tr>
+                    <td>PG</td>
+                    <td><input type="number" id="pgMl" oninput="updatePercentage('pg')"></td>
+                    <td><input type="number" id="pgPercent" oninput="updateMl('pg')"></td>
+                </tr>
+                <tr>
+                    <td>VG</td>
+                    <td><input type="number" id="vgMl" oninput="updatePercentage('vg')"></td>
+                    <td><input type="number" id="vgPercent" oninput="updateMl('vg')"></td>
+                </tr>
+                <tr>
+                    <td>Sweetener</td>
+                    <td><input type="number" id="sweetenerMl" oninput="updatePercentage('sweetener')"></td>
+                    <td><input type="number" id="sweetenerPercent" oninput="updateMl('sweetener')"></td>
+                </tr>
+                <tr>
+                    <td>Chiller</td>
+                    <td><input type="number" id="chillerMl" oninput="updatePercentage('chiller')"></td>
+                    <td><input type="number" id="chillerPercent" oninput="updateMl('chiller')"></td>
+                </tr>
+                <tr>
+                    <td>Flavour</td>
+                    <td><input type="number" id="flavourMl" oninput="updatePercentage('flavour')"></td>
+                    <td><input type="number" id="flavourPercent" oninput="updateMl('flavour')"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Nicotine Calculator</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Kadar Nikotin (mg/ml)</th>
+                    <th>ml Dibutuhkan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="number" id="nicotineStrength" value="3" oninput="updateNicotine()"></td>
+                    <td><input type="number" id="nicotineMl" disabled></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="note">
+            <p>Konsentrasi nikotin cair: 100 mg/ml</p>
+        </div>
+    </div>
+
+    <script>
+        const nicotineConcentration = 100; // Konsentrasi nikotin cair (mg/ml)
+
+        function updateValues() {
+            const totalMl = parseFloat(document.getElementById('totalMl').value);
+
+            ['pg', 'vg', 'sweetener', 'chiller', 'flavour'].forEach(ingredient => {
+                const percent = parseFloat(document.getElementById(`${ingredient}Percent`).value) || 0;
+                document.getElementById(`${ingredient}Ml`).value = ((percent / 100) * totalMl).toFixed(2);
+            });
+            updateNicotine();
+        }
+
+        function updatePercentage(ingredient) {
+            const totalMl = parseFloat(document.getElementById('totalMl').value);
+            const ml = parseFloat(document.getElementById(`${ingredient}Ml`).value) || 0;
+            document.getElementById(`${ingredient}Percent`).value = ((ml / totalMl) * 100).toFixed(2);
+            validateTotalPercentage();
+        }
+
+        function updateMl(ingredient) {
+            const totalMl = parseFloat(document.getElementById('totalMl').value);
+            const percent = parseFloat(document.getElementById(`${ingredient}Percent`).value) || 0;
+            document.getElementById(`${ingredient}Ml`).value = ((percent / 100) * totalMl).toFixed(2);
+            validateTotalPercentage();
+        }
+
+        function validateTotalPercentage() {
+            const totalPercent = ['pg', 'vg', 'sweetener', 'chiller', 'flavour']
+                .reduce((sum, ingredient) => sum + (parseFloat(document.getElementById(`${ingredient}Percent`).value) || 0), 0);
+
+            document.getElementById('totalPercent').value = totalPercent.toFixed(2);
+            if (totalPercent > 100) {
+                alert('Total persentase tidak boleh lebih dari 100%');
+            }
+        }
+
+        function updateNicotine() {
+            const totalMl = parseFloat(document.getElementById('totalMl').value);
+            const nicotineStrength = parseFloat(document.getElementById('nicotineStrength').value) || 0;
+            const nicotineMl = (nicotineStrength * totalMl) / nicotineConcentration;
+            document.getElementById('nicotineMl').value = nicotineMl.toFixed(2);
+        }
+
+        updateValues();
+    </script>
+</body>
+</html>

@@ -10,13 +10,6 @@
       margin: 20px;
       background-color: #f9f9f9;
     }
-    .card {
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -41,12 +34,32 @@
     input[type="number"] {
       width: 80px;
     }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card h1 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
-  <h1>E-liquid Calculator</h1>
   <div class="card">
+    <h1>E-liquid Calculator</h1>
     <form id="eliquidForm">
+      <!-- Total E-liquid Section -->
+      <table>
+        <tr class="total">
+          <td>Total E-liquid</td>
+          <td><input type="number" id="totalEliquidMl" value="30"> ml</td>
+          <td>100 %</td>
+        </tr>
+      </table>
+
       <!-- Base Section -->
       <table>
         <tr>
@@ -54,18 +67,18 @@
         </tr>
         <tr>
           <td>PG</td>
-          <td><input type="number" id="pgMl" value="15" readonly> ml</td>
+          <td><input type="number" id="pgMl" readonly> ml</td>
           <td><input type="number" id="pgPercent" value="50"> %</td>
         </tr>
         <tr>
           <td>VG</td>
-          <td><input type="number" id="vgMl" value="15" readonly> ml</td>
+          <td><input type="number" id="vgMl" readonly> ml</td>
           <td><input type="number" id="vgPercent" value="50"> %</td>
         </tr>
         <tr class="highlight">
           <td>Total Base</td>
-          <td id="totalBaseMl">30 ml</td>
-          <td id="totalBasePercent">100 %</td>
+          <td id="totalBaseMl">0 ml</td>
+          <td id="totalBasePercent">0 %</td>
         </tr>
       </table>
 
@@ -77,11 +90,11 @@
         <tr>
           <td>Nicotine Strength</td>
           <td><input type="number" id="nicStrength" value="3"> mg/ml</td>
-          <td><input type="number" id="nicPercent" value="10" readonly> %</td>
+          <td><input type="number" id="nicPercent" readonly> %</td>
         </tr>
         <tr>
           <td>Nicotine Needed</td>
-          <td id="nicMl">0.9 ml</td>
+          <td id="nicMl">0 ml</td>
           <td>-</td>
         </tr>
       </table>
@@ -93,37 +106,28 @@
         </tr>
         <tr>
           <td>Sweetener</td>
-          <td><input type="number" id="sweetenerMl" value="0.45" readonly> ml</td>
+          <td><input type="number" id="sweetenerMl" readonly> ml</td>
           <td><input type="number" id="sweetenerPercent" value="1.5"> %</td>
         </tr>
         <tr>
           <td>Chiller</td>
-          <td><input type="number" id="chillerMl" value="0.3" readonly> ml</td>
+          <td><input type="number" id="chillerMl" readonly> ml</td>
           <td><input type="number" id="chillerPercent" value="1"> %</td>
         </tr>
         <tr>
           <td>Flavor</td>
-          <td><input type="number" id="flavorMl" value="4.5" readonly> ml</td>
+          <td><input type="number" id="flavorMl" readonly> ml</td>
           <td><input type="number" id="flavorPercent" value="15"> %</td>
-        </tr>
-      </table>
-
-      <!-- Total Section -->
-      <table>
-        <tr class="total">
-          <td>Total E-liquid</td>
-          <td id="totalEliquidMl">30 ml</td>
-          <td id="totalEliquidPercent">100 %</td>
         </tr>
       </table>
     </form>
   </div>
 
   <script>
-    const totalEliquidMl = 30;
     const nicBaseStrength = 100; // mg/ml
 
     function calculateValues() {
+      const totalEliquidMl = parseFloat(document.getElementById('totalEliquidMl').value) || 0;
       const pgPercent = parseFloat(document.getElementById('pgPercent').value) || 0;
       const vgPercent = parseFloat(document.getElementById('vgPercent').value) || 0;
       const nicStrength = parseFloat(document.getElementById('nicStrength').value) || 0;
@@ -158,9 +162,6 @@
       document.getElementById('vgMl').value = vgMl.toFixed(2);
       document.getElementById('totalBaseMl').textContent = (pgMl + vgMl).toFixed(2) + ' ml';
       document.getElementById('totalBasePercent').textContent = basePercent.toFixed(2) + ' %';
-
-      document.getElementById('totalEliquidMl').textContent = totalEliquidMl + ' ml';
-      document.getElementById('totalEliquidPercent').textContent = '100 %';
     }
 
     document.getElementById('eliquidForm').addEventListener('input', calculateValues);
